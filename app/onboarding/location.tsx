@@ -23,13 +23,12 @@ export default function LocationScreen() {
       <MascotBlob />
       <View style={styles.logoBlock}>
         <Text style={styles.logo}>Foodie</Text>
-        <Text style={styles.logoSub}>— Finder —</Text>
       </View>
       <View style={{ flex: 1 }} />
       <View style={styles.sheet}>
         <View style={styles.sheetHead}>
           <Text style={styles.sheetIcon}>📍</Text>
-          <Text style={styles.sheetTitle}>Allow Foodie Finder to access your location?</Text>
+          <Text style={styles.sheetTitle}>Allow Foodie to access your location?</Text>
           <Text style={styles.sheetDesc}>Used only to show restaurants near you</Text>
         </View>
         <View>
@@ -65,7 +64,6 @@ const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: FF.cream, alignItems: "center" },
   logoBlock: { alignItems: "center", marginTop: 14 },
   logo: { fontSize: 36, fontWeight: "900", color: FF.red },
-  logoSub: { fontSize: 19, fontWeight: "800", color: FF.orange },
   sheet: {
     width: "100%",
     maxWidth: 400,

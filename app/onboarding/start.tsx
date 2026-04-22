@@ -21,7 +21,6 @@ export default function StartScreen() {
       <MascotBlob />
       <View style={styles.logoBlock}>
         <Text style={styles.logo}>Foodie</Text>
-        <Text style={styles.logoSub}>— Finder —</Text>
       </View>
       <Text style={styles.welcome}>Welcome!</Text>
       <Text style={styles.p}>How would you like to explore?</Text>
@@ -43,7 +42,6 @@ const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: FF.cream, alignItems: "center" },
   logoBlock: { alignItems: "center", marginTop: 14 },
   logo: { fontSize: 36, fontWeight: "900", color: FF.red },
-  logoSub: { fontSize: 19, fontWeight: "800", color: FF.orange },
   welcome: { fontSize: 28, fontWeight: "900", color: FF.dark, marginTop: 28 },
   p: { fontSize: 14, color: FF.med, marginTop: 8 },
   actions: { gap: 10, width: "100%" },

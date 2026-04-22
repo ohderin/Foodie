@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "Foodie Finder",
-    "slug": "foodie-finder-expo",
+    "name": "Foodie",
+    "slug": "foodie-expo",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-    "scheme": "foodiefinder",
+    "scheme": "foodie",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "splash": {
@@ -15,9 +15,9 @@
     },
     "ios": {
       "supportsTablet": false,
-      "bundleIdentifier": "com.foodiefinder.expo",
+      "bundleIdentifier": "com.foodie.expo",
       "infoPlist": {
-        "NSLocationWhenInUseUsageDescription": "Foodie Finder uses your location to show nearby restaurants."
+        "NSLocationWhenInUseUsageDescription": "Foodie uses your location to show nearby restaurants."
       }
     },
     "android": {
@@ -25,7 +25,7 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFF8F0"
       },
-      "package": "com.foodiefinder.expo",
+      "package": "com.foodie.expo",
       "permissions": ["ACCESS_COARSE_LOCATION", "ACCESS_FINE_LOCATION"]
     },
     "plugins": [
@@ -33,7 +33,7 @@
       [
         "expo-location",
         {
-          "locationWhenInUsePermission": "Foodie Finder uses your location to show nearby restaurants."
+          "locationWhenInUsePermission": "Foodie uses your location to show nearby restaurants."
         }
       ]
     ],

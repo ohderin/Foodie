@@ -1,5 +1,6 @@
 import { Tabs } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
+import { View } from "react-native";
 import { FF } from "../../src/theme/colors";
 
 export default function TabsLayout() {
@@ -10,15 +11,17 @@ export default function TabsLayout() {
         tabBarInactiveTintColor: FF.med,
         headerShown: false,
         tabBarStyle: {
-          backgroundColor: FF.cream,
-          borderTopColor: FF.border,
+          backgroundColor: "transparent",
+          borderTopColor: "rgba(255,255,255,0.45)",
+          borderTopWidth: 1,
         },
+        tabBarBackground: () => <View style={{ flex: 1, backgroundColor: "rgba(255,248,240,0.88)" }} />,
       }}
     >
       <Tabs.Screen
         name="index"
         options={{
-          title: "Discover",
+          title: "Swipe",
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="compass" size={size} color={color} />
           ),
@@ -27,7 +30,7 @@ export default function TabsLayout() {
       <Tabs.Screen
         name="saved"
         options={{
-          title: "Saved",
+          title: "Likes",
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="heart-outline" size={size} color={color} />
           ),

@@ -15,7 +15,6 @@ export default function SplashScreen() {
         <MascotBlob />
         <View style={styles.logoBlock}>
           <Text style={styles.logo}>Foodie</Text>
-          <Text style={styles.logoSub}>— Finder —</Text>
         </View>
         <Text style={styles.welcome}>Welcome!</Text>
         <Text style={styles.p}>
@@ -43,7 +42,6 @@ const styles = StyleSheet.create({
   scroll: { alignItems: "center", paddingTop: 28 },
   logoBlock: { alignItems: "center", marginTop: 14 },
   logo: { fontSize: 36, fontWeight: "900", color: FF.red },
-  logoSub: { fontSize: 19, fontWeight: "800", color: FF.orange, letterSpacing: 1 },
   welcome: { fontSize: 28, fontWeight: "900", color: FF.dark, marginTop: 28 },
   p: {
     fontSize: 14,

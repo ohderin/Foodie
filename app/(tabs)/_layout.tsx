@@ -12,7 +12,7 @@ export default function TabsLayout() {
         headerShown: false,
         tabBarStyle: {
           backgroundColor: "transparent",
-          borderTopColor: "rgba(255,255,255,0.45)",
+          borderTopColor: "rgba(0,0,0,0.18)",
           borderTopWidth: 1,
         },
         tabBarBackground: () => <View style={{ flex: 1, backgroundColor: "rgba(255,248,240,0.88)" }} />,
@@ -21,7 +21,7 @@ export default function TabsLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: "Swipe",
+          title: "Explore",
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="compass" size={size} color={color} />
           ),

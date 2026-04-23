@@ -1,6 +1,6 @@
 # Foodie
 
-Expo / React Native Project
+Expo 54.0.0 – React Native 0.70.0
 
 ## Setup
 

@@ -1,8 +1,13 @@
+
 import { LinearGradient } from "expo-linear-gradient";
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { SAMPLE_RESTAURANT } from "../src/data/sampleRestaurant";
 import { FF } from "../src/theme/colors";
+import { getRestaurantTheme } from "../src/data/restaurantColors";
+import { useLocalSearchParams } from "expo-router";
+import { RESTAURANT_POOL } from "../src/data/sampleRestaurant";
+
 
 const CANES_ITEMS = [
   {
@@ -183,20 +188,51 @@ const CANES_ITEMS = [
 const CATS = ["Combos", "TailGates", "Extras", "Drinks", "Kids"];
 
 export default function MenuScreen() {
+  const { restaurantId } = useLocalSearchParams< { restaurantId: string }>();
+
+  //This now get restaurant from Restaurant_Pool
+  const currentRestaurant = RESTAURANT_POOL.find(r => r.id === restaurantId) || RESTAURANT_POOL[0];
   const [cat, setCat] = useState("Combos");
 
+  // Get the restaurant theme
+  const theme = useMemo(() => {
+     console.log("Restaurant ID:", currentRestaurant.id);
+     console.log("🔍 restaurantId from params:", restaurantId);
+     console.log("🏪 currentRestaurant:", currentRestaurant?.name, currentRestaurant?.id);
+     console.log("🎨 theme colors:", getRestaurantTheme(currentRestaurant.id));
+    return getRestaurantTheme(currentRestaurant.id);
+  }, [currentRestaurant.id]);
+
   const getItems = CANES_ITEMS.filter(item => item.category === cat);
+
+  // Create dynamic styles based on theme
+  const dynamicStyles = useMemo(() => {
+    return {
+      banner: {
+        colors: [theme.dark, theme.primary] as const,
+      },
+      catOn: {
+        backgroundColor: theme.primary,
+      },
+      thumb: {
+        backgroundColor: theme.primary,
+      },
+      price: {
+        color: theme.primary,
+      },
+    };
+  }, [theme]);
 
   return (
     <View style={{ flex: 1, backgroundColor: FF.cream }}>
       <LinearGradient
-        colors={["#8B1E2A", "#C62A38"]}
+        colors={dynamicStyles.banner.colors}
         style={styles.banner}
       >
-        <Text style={styles.bannerName}>{SAMPLE_RESTAURANT.name}</Text>
+        <Text style={styles.bannerName}>{currentRestaurant.name}</Text>
         <Text style={styles.bannerMeta}>
-          🟢 Open Now · {SAMPLE_RESTAURANT.closingNote} ·{" "}
-          {SAMPLE_RESTAURANT.distanceMiles.toFixed(1)} mi
+          🟢 Open Now · {currentRestaurant.closingNote} ·{" "}
+          {currentRestaurant.distanceMiles.toFixed(1)} mi
         </Text>
       </LinearGradient>
 
@@ -204,13 +240,13 @@ export default function MenuScreen() {
         horizontal
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={styles.catRow}
-        
+        //scrollEnabled={false}
       >
         {CATS.map((c) => (
           <Pressable
             key={c}
             onPress={() => setCat(c)}
-            style={[styles.cat, cat === c && styles.catOn]}
+            style={[styles.cat, cat === c && { backgroundColor: dynamicStyles.catOn.backgroundColor }]}
           >
             <Text style={[styles.catText, cat === c && styles.catTextOn]}>
               {c}
@@ -222,7 +258,7 @@ export default function MenuScreen() {
       <ScrollView contentContainerStyle={styles.scrollContent}>
         {getItems.map((item, i) => (
           <View key={i} style={styles.item}>
-            <View style={styles.thumb}>
+            <View style={[styles.thumb, { backgroundColor: dynamicStyles.thumb.backgroundColor }]}>
               <Text style={{ fontSize: 22 }}>🍗</Text>
             </View>
             <View style={{ flex: 1 }}>
@@ -231,7 +267,7 @@ export default function MenuScreen() {
               ) : null}
               <Text style={styles.itemName}>{item.name}</Text>
               <Text style={styles.itemDesc}>{item.desc}</Text>
-              <Text style={styles.price}>{item.price}</Text>
+              <Text style={[styles.price, { color: dynamicStyles.price.color }]}>{item.price}</Text>
             </View>
           </View>
         ))}
@@ -249,7 +285,7 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     gap: 8,
     flexDirection: "row",
-    height: 56,
+    //height: 56,
     alignItems: "center",
   },
   scrollContent: {
@@ -264,7 +300,6 @@ const styles = StyleSheet.create({
     height: 40,
     justifyContent: "center",
   },
-  catOn: { backgroundColor: FF.red },
   catText: { fontWeight: "900", color: FF.dark, fontSize: 14 },
   catTextOn: { color: "#fff", fontSize: 14 },
   item: {
@@ -281,12 +316,11 @@ const styles = StyleSheet.create({
     width: 56,
     height: 56,
     borderRadius: 14,
-    backgroundColor: FF.red,
     alignItems: "center",
     justifyContent: "center",
   },
   badge: { fontSize: 11, fontWeight: "800", color: FF.orange, marginBottom: 4 },
   itemName: { fontSize: 17, fontWeight: "900", color: FF.dark },
   itemDesc: { fontSize: 12, color: FF.med, marginTop: 4, lineHeight: 16 },
-  price: { fontSize: 17, fontWeight: "900", color: FF.red, marginTop: 6 },
+  price: { fontSize: 17, fontWeight: "900", marginTop: 6 },
 });

@@ -7,6 +7,7 @@ import { getRestaurantTheme } from "../src/data/restaurantColors";
 import { useLocalSearchParams } from "expo-router";
 import { RESTAURANT_POOL } from "../src/data/sampleRestaurant";
 import { getMenuForRestaurant } from "../src/data/restaurantMenus";
+import { RESTAURANT_EMOJIS } from "../src/data/restaurantEmoji";
 
 export default function MenuScreen() {
   const { restaurantId } = useLocalSearchParams<{ restaurantId: string }>();
@@ -45,6 +46,12 @@ export default function MenuScreen() {
 
   const getItems = menuItems.filter((item) => item.category === cat);
 
+
+  //gets emojis for menu
+  const emoji = useMemo (() => {
+      return RESTAURANT_EMOJIS[currentRestaurant.id] 
+  }, [currentRestaurant.id]);
+  
   // Create dynamic styles based on theme
   const dynamicStyles = useMemo(() => {
     return {
@@ -113,7 +120,7 @@ export default function MenuScreen() {
                 { backgroundColor: dynamicStyles.thumb.backgroundColor },
               ]}
             >
-              <Text style={{ fontSize: 22 }}>🍗</Text>
+              <Text style={{ fontSize: 22 }}>{emoji}</Text>
             </View>
             <View style={{ flex: 1 }}>
               {item.badge ? (

@@ -78,12 +78,14 @@ function pickNextRestaurant(
 ): Restaurant | null {
   const candidates = pool.filter((restaurant) => !prefs.disliked[restaurant.id]);
   if (!candidates.length) return null;
+  const selectable =
+    excludeId && candidates.length > 1
+      ? candidates.filter((restaurant) => restaurant.id !== excludeId)
+      : candidates;
 
-  const weighted = candidates.map((restaurant) => {
+  const weighted = selectable.map((restaurant) => {
     const baseWeight = prefs.weights[restaurant.id] ?? 1;
-    const penalizedWeight =
-      excludeId && candidates.length > 1 && restaurant.id === excludeId ? baseWeight * 0.25 : baseWeight;
-    return { restaurant, weight: Math.max(0.2, penalizedWeight) };
+    return { restaurant, weight: Math.max(0.2, baseWeight) };
   });
 
   const totalWeight = weighted.reduce((sum, item) => sum + item.weight, 0);

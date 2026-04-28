@@ -1,5 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as Haptics from "expo-haptics";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -321,9 +322,19 @@ const vibeFilteredRestaurants = useMemo(() => {
     }).start();
   }, [swipe]);
 
+  const triggerSwipeHaptic = useCallback((direction: "left" | "right") => {
+    const style =
+      direction === "right"
+        ? Haptics.ImpactFeedbackStyle.Heavy
+        : Haptics.ImpactFeedbackStyle.Medium;
+    void Haptics.impactAsync(style).catch(() => {
+    });
+  }, []);
+
   const triggerSwipe = useCallback(
     (direction: "left" | "right") => {
       if (!restaurant) return;
+      triggerSwipeHaptic(direction);
       const current = restaurant;
       const targetX = direction === "right" ? 420 : -420;
       Animated.timing(swipe, {
@@ -335,7 +346,7 @@ const vibeFilteredRestaurants = useMemo(() => {
         advanceRestaurant(direction, current);
       });
     },
-    [advanceRestaurant, restaurant, swipe]
+    [advanceRestaurant, restaurant, swipe, triggerSwipeHaptic]
   );
 
   const resetRecommendations = useCallback(() => {

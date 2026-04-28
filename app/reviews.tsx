@@ -1,27 +1,29 @@
+import { Ionicons } from "@expo/vector-icons";
 import React from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { SAMPLE_RESTAURANT } from "../src/data/sampleRestaurant";
 import { useApp } from "../src/context/AppContext";
 
 const REVIEWS = [
-  { initials: "JD", name: "John Doe", stars: "⭐⭐⭐⭐⭐", text: "I wanna get married here. The sauce hits different every single time." },
-  { initials: "BJ", name: "Billy John", stars: "⭐⭐⭐⭐", text: "Best fried chicken hands down. Crinkle fries are always perfectly crispy." },
-  { initials: "BC", name: "Brittney Clare", stars: "⭐⭐", text: "Mid. The hype is too much. It's decent but I don't understand why everyone loses their mind over it." },
+  { initials: "JD", name: "John Doe", stars: 5, text: "I wanna get married here. The sauce hits different every single time." },
+  { initials: "BJ", name: "Billy John", stars: 4, text: "Best fried chicken hands down. Crinkle fries are always perfectly crispy." },
+  { initials: "BC", name: "Brittney Clare", stars: 2, text: "Mid. The hype is too much. It's decent but I don't understand why everyone loses their mind over it." },
 ];
 
 const BAR = [0.6, 0.22, 0.1, 0.05, 0.03];
 
 export default function ReviewsScreen() {
   const r = SAMPLE_RESTAURANT;
-  const { colors } = useApp();
-  const styles = React.useMemo(() => createStyles(colors), [colors]);
+  const { colors, isDarkMode } = useApp();
+  const ratingAccentColor = isDarkMode ? colors.golden : colors.dark;
+  const styles = React.useMemo(() => createStyles(colors, ratingAccentColor), [colors, ratingAccentColor]);
 
   return (
       <ScrollView style={{ flex: 1, backgroundColor: colors.cream }} contentContainerStyle={{ padding: 16 }}>
         <View style={styles.summary}>
           <View style={{ alignItems: "center" }}>
             <Text style={styles.bigNum}>{r.rating.toFixed(1)}</Text>
-            <Text>⭐⭐⭐⭐⭐</Text>
+            <StarRow rating={5} color={ratingAccentColor} />
             <Text style={styles.reviewCount}>{r.reviewCount} reviews</Text>
           </View>
           <View style={{ flex: 1, marginLeft: 16 }}>
@@ -43,9 +45,10 @@ export default function ReviewsScreen() {
               </View>
               <View>
                 <Text style={styles.revName}>{rev.name}</Text>
-                <Text style={styles.revMeta}>
-                  {rev.stars} · 2 days ago
-                </Text>
+                <View style={styles.revMetaRow}>
+                  <StarRow rating={rev.stars} color={ratingAccentColor} size={12} />
+                  <Text style={styles.revMeta}> · 2 days ago</Text>
+                </View>
               </View>
             </View>
             <Text style={styles.revBody}>{rev.text}</Text>
@@ -55,7 +58,25 @@ export default function ReviewsScreen() {
   );
 }
 
-const createStyles = (colors: ReturnType<typeof useApp>["colors"]) => StyleSheet.create({
+function StarRow({ rating, color, size = 14 }: { rating: number; color: string; size?: number }) {
+  return (
+    <View style={{ flexDirection: "row", alignItems: "center", gap: 1 }}>
+      {Array.from({ length: 5 }, (_, index) => (
+        <Ionicons
+          key={index}
+          name={index < rating ? "star" : "star-outline"}
+          size={size}
+          color={color}
+        />
+      ))}
+    </View>
+  );
+}
+
+const createStyles = (
+  colors: ReturnType<typeof useApp>["colors"],
+  ratingAccentColor: string
+) => StyleSheet.create({
   summary: {
     flexDirection: "row",
     backgroundColor: colors.cream2,
@@ -76,7 +97,7 @@ const createStyles = (colors: ReturnType<typeof useApp>["colors"]) => StyleSheet
     backgroundColor: colors.border,
     overflow: "hidden",
   },
-  fill: { height: "100%", backgroundColor: colors.golden },
+  fill: { height: "100%", backgroundColor: ratingAccentColor },
   review: {
     backgroundColor: colors.cream2,
     borderRadius: 16,
@@ -96,6 +117,7 @@ const createStyles = (colors: ReturnType<typeof useApp>["colors"]) => StyleSheet
   },
   revAvText: { fontWeight: "900", color: colors.redDark, fontSize: 12 },
   revName: { fontWeight: "700", fontSize: 15, color: colors.dark },
+  revMetaRow: { flexDirection: "row", alignItems: "center", marginTop: 2 },
   revMeta: { fontSize: 12, color: colors.med },
   revBody: { fontSize: 15, color: colors.med, lineHeight: 22 },
 });

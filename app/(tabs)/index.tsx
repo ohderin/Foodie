@@ -3,6 +3,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useApp } from "../../src/context/AppContext";
 import {
   Animated,
   ImageBackground,
@@ -159,7 +160,7 @@ export default function DiscoverScreen() {
         setPrefs(parsed);
         setRestaurant(pickNextRestaurant(parsed));
       } catch {
-        // Ignore malformed local data and continue with defaults.
+        // ignore broken data and use defaults
       } finally {
         setPrefsHydrated(true);
       }
@@ -169,13 +170,15 @@ export default function DiscoverScreen() {
   useEffect(() => {
     if (!prefsHydrated) return;
     AsyncStorage.setItem(SWIPE_PREFS_KEY, JSON.stringify(prefs)).catch(() => {
-      // Non-blocking persistence failure; UI should continue to function.
+      // persistance failure, UI fallback (continue regardless)
     });
   }, [prefs, prefsHydrated]);
 
   useEffect(() => {
     prefsRef.current = prefs;
   }, [prefs]);
+
+  const { addHeart } = useApp();
 
   const toggleFilter = (index: number) => {
     setFilters((current) => {
@@ -299,14 +302,16 @@ const vibeFilteredRestaurants = useMemo(() => {
   );
 
   const advanceRestaurant = useCallback(
-    (direction: "left" | "right") => {
-      if (!restaurant) return;
-      const currentId = restaurant.id;
+    (direction: "left" | "right", current: Restaurant) => {
+      const currentId = current.id;
+      if (direction === "right") {
+        addHeart(current);
+      }
       const nextPrefs = buildNextPrefs(prefsRef.current, currentId, direction);
       setPrefs(nextPrefs);
       setRestaurant(pickNextRestaurant(nextPrefs, currentId, vibeFilteredRestaurants));
     },
-    [restaurant, vibeFilteredRestaurants]
+    [restaurant, vibeFilteredRestaurants, addHeart]
   );
 
   const snapBack = useCallback(() => {
@@ -320,6 +325,7 @@ const vibeFilteredRestaurants = useMemo(() => {
   const triggerSwipe = useCallback(
     (direction: "left" | "right") => {
       if (!restaurant) return;
+      const current = restaurant;
       const targetX = direction === "right" ? 420 : -420;
       Animated.timing(swipe, {
         toValue: { x: targetX, y: -20 },
@@ -327,7 +333,7 @@ const vibeFilteredRestaurants = useMemo(() => {
         useNativeDriver: true,
       }).start(() => {
         swipe.setValue({ x: 0, y: 0 });
-        advanceRestaurant(direction);
+        advanceRestaurant(direction, current);
       });
     },
     [advanceRestaurant, restaurant, swipe]

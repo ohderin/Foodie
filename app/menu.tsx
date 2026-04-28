@@ -1,6 +1,6 @@
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useState, useMemo } from "react";
-import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Image, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { SAMPLE_RESTAURANT } from "../src/data/sampleRestaurant";
 import { FF } from "../src/theme/colors";
 import { getRestaurantTheme } from "../src/data/restaurantColors";
@@ -76,11 +76,20 @@ export default function MenuScreen() {
         colors={dynamicStyles.banner.colors}
         style={styles.banner}
       >
-        <Text style={styles.bannerName}>{currentRestaurant.name}</Text>
-        <Text style={styles.bannerMeta}>
-          🟢 Open Now · {currentRestaurant.closingNote} ·{" "}
-          {currentRestaurant.distanceMiles.toFixed(1)} mi
-        </Text>
+        <View style={styles.bannerRow}>
+          <Image
+            source={{ uri: currentRestaurant.imageUrl ?? SAMPLE_RESTAURANT.imageUrl }}
+            style={styles.bannerImage}
+            resizeMode="cover"
+          />
+          <View style={styles.bannerTextWrap}>
+            <Text style={styles.bannerName}>{currentRestaurant.name}</Text>
+            <Text style={styles.bannerMeta}>
+              <Text style={styles.openDot}>●</Text> Open Now · {currentRestaurant.closingNote} ·{" "}
+              {currentRestaurant.distanceMiles.toFixed(1)} mi
+            </Text>
+          </View>
+        </View>
       </LinearGradient>
 
       <ScrollView
@@ -146,11 +155,29 @@ export default function MenuScreen() {
 
 const styles = StyleSheet.create({
   banner: { padding: 20 },
+  bannerRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+  },
+  bannerImage: {
+    width: 64,
+    height: 64,
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.45)",
+  },
+  bannerTextWrap: {
+    flex: 1,
+  },
   bannerName: { color: "#fff", fontSize: 22, fontWeight: "900" },
   bannerMeta: {
     color: "rgba(255,255,255,0.9)",
     marginTop: 6,
     fontSize: 13,
+  },
+  openDot: {
+    color: "#22C55E",
   },
   catRow: {
     paddingHorizontal: 14,

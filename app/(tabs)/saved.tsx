@@ -14,9 +14,7 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useApp } from "../../src/context/AppContext";
-
-const DEFAULT_RESTAURANT_BG_URI =
-  "https://cdn.under30ceo.com/wp-content/uploads/2024/12/b67d70f9-3f97-4375-9bf9-e9ff1bb307c4.jpg";
+import { getRestaurantImageSource } from "../../src/data/restaurantImageAssets";
 
 export default function SavedScreen() {
   const insets = useSafeAreaInsets();
@@ -68,7 +66,7 @@ export default function SavedScreen() {
                 ]}
               >
                 <ImageBackground
-                  source={{ uri: item.imageUrl ?? DEFAULT_RESTAURANT_BG_URI }}
+                  source={getRestaurantImageSource(item)}
                   style={styles.card}
                   imageStyle={styles.cardImage}
                 >

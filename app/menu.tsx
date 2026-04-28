@@ -8,6 +8,7 @@ import { useLocalSearchParams } from "expo-router";
 import { RESTAURANT_POOL } from "../src/data/sampleRestaurant";
 import { getMenuForRestaurant } from "../src/data/restaurantMenus";
 import { getIconForRestaurant } from "../src/data/restaurantEmoji";
+import { getRestaurantImageSource } from "../src/data/restaurantImageAssets";
 import { useApp } from "../src/context/AppContext";
 
 function hexToRgb(hex: string) {
@@ -125,7 +126,7 @@ export default function MenuScreen() {
       >
         <View style={styles.bannerRow}>
           <Image
-            source={{ uri: currentRestaurant.imageUrl ?? SAMPLE_RESTAURANT.imageUrl }}
+            source={getRestaurantImageSource(currentRestaurant)}
             style={styles.bannerImage}
             resizeMode="cover"
           />

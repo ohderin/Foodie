@@ -18,14 +18,13 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { DirectionsSheet } from "../../src/components/DirectionsSheet";
+import { getRestaurantImageSource } from "../../src/data/restaurantImageAssets";
 import { RESTAURANT_POOL, SAMPLE_RESTAURANT, type Restaurant } from "../../src/data/sampleRestaurant";
 
 
 
 
 const FILTERS = ["Nearby", "Open Now", "$$$", "$$", "$"];
-const DEFAULT_RESTAURANT_BG_URI =
-  "https://cdn.under30ceo.com/wp-content/uploads/2024/12/b67d70f9-3f97-4375-9bf9-e9ff1bb307c4.jpg";
 const SWIPE_THRESHOLD = 120;
 const SWIPE_PREFS_KEY = "foodie.swipePrefs";
 const AnimatedImageBackground = Animated.createAnimatedComponent(ImageBackground);
@@ -143,6 +142,7 @@ export default function DiscoverScreen() {
   const [filters, setFilters] = useState<boolean[]>(() => FILTERS.map((_, i) => i === 0));
   const [prefs, setPrefs] = useState<SwipePrefs>(INITIAL_PREFS);
   const [restaurant, setRestaurant] = useState<Restaurant | null>(() => pickNextRestaurant(INITIAL_PREFS));
+  const [isSwappingCard, setIsSwappingCard] = useState(false);
   const [prefsHydrated, setPrefsHydrated] = useState(false);
   const swipe = useRef(new Animated.ValueXY()).current;
   const prefsRef = useRef<SwipePrefs>(INITIAL_PREFS);
@@ -340,12 +340,22 @@ const vibeFilteredRestaurants = useMemo(() => {
         duration: 220,
         useNativeDriver: true,
       }).start(() => {
-        swipe.setValue({ x: 0, y: 0 });
+        setIsSwappingCard(true);
         advanceRestaurant(direction, current);
       });
     },
     [advanceRestaurant, restaurant, swipe, triggerSwipeHaptic]
   );
+
+  useEffect(() => {
+    // Reset only after new card selection and reveal on next frame to prevent flash.
+    swipe.setValue({ x: 0, y: 0 });
+    if (!isSwappingCard) return;
+    const raf = requestAnimationFrame(() => {
+      setIsSwappingCard(false);
+    });
+    return () => cancelAnimationFrame(raf);
+  }, [restaurant?.id, swipe, isSwappingCard]);
 
   const resetRecommendations = useCallback(() => {
     swipe.setValue({ x: 0, y: 0 });
@@ -432,12 +442,13 @@ const vibeFilteredRestaurants = useMemo(() => {
             styles.card,
             {
               transform: [{ translateX: swipe.x }, { translateY: swipe.y }, { rotate }],
+              opacity: isSwappingCard ? 0 : 1,
             },
           ]}
           {...(restaurant ? panResponder.panHandlers : {})}
         >
           <AnimatedImageBackground
-            source={{ uri: restaurant?.imageUrl ?? DEFAULT_RESTAURANT_BG_URI }}
+            source={getRestaurantImageSource(restaurant)}
             style={styles.cardBackground}
             imageStyle={styles.cardBackgroundImage}
           />

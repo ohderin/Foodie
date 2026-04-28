@@ -1,4 +1,5 @@
 import { Ionicons } from "@expo/vector-icons";
+import * as Haptics from "expo-haptics";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import React, { useState } from "react";
@@ -36,6 +37,7 @@ export default function SavedScreen() {
           data={hearted}
           keyExtractor={(item) => item.id}
           numColumns={2}
+        showsVerticalScrollIndicator={false}
           columnWrapperStyle={styles.gridRow}
           contentContainerStyle={styles.listContent}
           renderItem={({ item }) => (
@@ -43,6 +45,9 @@ export default function SavedScreen() {
               <Pressable
                 onLongPress={(event) => {
                   event.stopPropagation();
+                  void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy).catch(() => {
+                    // continue regardless
+                  });
                   setContextCardId(item.id);
                 }}
                 delayLongPress={220}
@@ -135,8 +140,7 @@ const styles = StyleSheet.create({
     fontWeight: "900",
     color: FF.dark,
     marginBottom: 14,
-    textAlign: "left",
-    paddingHorizontal: 2,
+    textAlign: "center",
   },
   listContent: { paddingTop: 6, paddingBottom: 20, paddingHorizontal: 2 },
   gridRow: { justifyContent: "space-between", marginBottom: 10, overflow: "visible" },
